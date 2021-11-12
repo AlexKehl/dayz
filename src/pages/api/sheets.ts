@@ -1,12 +1,12 @@
 // @ts-nocheck
-import Env from 'Env'
 import { GoogleSpreadsheet } from 'google-spreadsheet'
 import nc from 'next-connect'
 import cors from 'cors'
+import EnvProxy from 'EnvProxy'
 
-const doc = new GoogleSpreadsheet(Env.SHEET_ID)
+const doc = new GoogleSpreadsheet(EnvProxy.SHEET_ID)
 
-doc.useApiKey(Env.API_KEY)
+doc.useApiKey(EnvProxy.API_KEY)
 
 export const getTableData = async () => {
   await doc.loadInfo()
