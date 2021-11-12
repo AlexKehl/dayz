@@ -15,16 +15,18 @@ const GoogleTable = ({ headers, rows }: Props) => {
       <Thead>
         <Tr>
           {headers.map((h) => (
-            <Th idx={h}>{h}</Th>
+            <Th key={h} backgroundColor={'gray.200'}>
+              {h}
+            </Th>
           ))}
         </Tr>
       </Thead>
       <Tbody>
         {rows.map((row, rowIdx) => (
           <Tr key={rowIdx}>
-            {row.map((player: PlayerInfo) => (
+            {row.map((player: PlayerInfo, cellIdx) => (
               <Td
-                key={player.name}
+                key={rows.length * rowIdx + cellIdx}
                 backgroundColor={player.isOnline ? 'green.100' : 'white'}
               >
                 {player.name}

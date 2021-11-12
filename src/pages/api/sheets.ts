@@ -3,6 +3,7 @@ import nc from 'next-connect'
 import cors from 'cors'
 import EnvProxy from 'EnvProxy'
 import axios from 'axios'
+import cheerio from 'cheerio'
 
 export interface PlayerInfo {
   isOnline: boolean
@@ -17,7 +18,9 @@ export const getGameTrackerPage = async (): Promise<string> => {
   const { data } = await axios.get(
     'https://www.gametracker.com/server_info/135.125.188.104:2352/'
   )
-  return data
+
+  const $ = cheerio.load(data)
+  return $('#HTML_online_players').html() as string
 }
 
 export const playerMap = (
@@ -28,7 +31,9 @@ export const playerMap = (
     return row.map((player) => {
       return {
         isOnline: Boolean(player)
-          ? new RegExp(player).test(gameTrackerPage)
+          ? new RegExp(player.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).test(
+              gameTrackerPage
+            )
           : false,
         name: player,
       }
