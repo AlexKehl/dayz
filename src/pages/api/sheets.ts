@@ -23,6 +23,31 @@ export const getGameTrackerPage = async (): Promise<string> => {
   return $('#HTML_online_players').html() as string
 }
 
+const getPlayerNameBySteamId = async (steamId: string): Promise<string> => {
+  if (!/\d{17}/.test(steamId)) {
+    return steamId
+  }
+  const { data } = await axios.get(
+    `https://www.dayzeuropa.com/playerProfile.php?id=${steamId}&p=quarter`
+  )
+
+  const $ = cheerio.load(data)
+  return $('.playerName').html() || steamId
+}
+
+const mapSteamIdsToNames = async (playerList: string[][]) => {
+  console.log(playerList)
+  return Promise.all(
+    playerList.map((row) => {
+      return Promise.all(
+        row.map((player) => {
+          return getPlayerNameBySteamId(player)
+        })
+      )
+    })
+  )
+}
+
 export const playerMap = (
   gameTrackerPage: string,
   playerList: string[][]
@@ -53,13 +78,12 @@ export const getTableData = async () => {
     getDocData(),
     getGameTrackerPage(),
   ])
+  const names = await mapSteamIdsToNames(rows.map((r) => r._rawData))
 
+  console.log(names)
   return {
     headers,
-    rows: playerMap(
-      gameTrackerPage,
-      rows.map((r) => r._rawData)
-    ),
+    rows: playerMap(gameTrackerPage, names),
   }
 }
 
