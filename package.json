@@ -30,6 +30,7 @@
     "@chakra-ui/react": "^1.7.0",
     "@emotion/react": "^11.5.0",
     "@emotion/styled": "^11.3.0",
+    "@types/cheerio": "^0.22.30",
     "@types/google-spreadsheet": "^3.1.5",
     "cheerio": "*",
     "cors": "^2.8.5",

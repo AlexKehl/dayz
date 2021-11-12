@@ -1216,6 +1216,13 @@
   "resolved" "https://registry.npmjs.org/@rushstack/eslint-patch/-/eslint-patch-1.0.7.tgz"
   "version" "1.0.7"
 
+"@types/cheerio@^0.22.30":
+  "integrity" "sha512-t7ZVArWZlq3dFa9Yt33qFBQIK4CQd1Q3UJp0V+UhP6vgLWLM6Qug7vZuRSGXg45zXeB1Fm5X2vmBkEX58LV2Tw=="
+  "resolved" "https://registry.npmjs.org/@types/cheerio/-/cheerio-0.22.30.tgz"
+  "version" "0.22.30"
+  dependencies:
+    "@types/node" "*"
+
 "@types/cors@^2.8.12":
   "integrity" "sha512-vt+kDhq/M2ayberEtJcIN/hxXy1Pk+59g2FV/ZQceeaTyCtCucjL2Q7FXlFjtWn4n15KCr1NE2lNNFhp0lEThw=="
   "resolved" "https://registry.npmjs.org/@types/cors/-/cors-2.8.12.tgz"
