@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { GoogleSpreadsheet } from 'google-spreadsheet'
 import nc from 'next-connect'
 import cors from 'cors'
@@ -23,7 +22,7 @@ const handler = nc()
   .use(cors())
   .get(async (req, res) => {
     const data = await getTableData()
-    // console.log(data.headers.rowIndex);
+    // @ts-ignore
     res.json(data)
   })
 

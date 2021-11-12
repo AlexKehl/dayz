@@ -3023,7 +3023,7 @@
   "resolved" "https://registry.npmjs.org/foreach/-/foreach-2.0.5.tgz"
   "version" "2.0.5"
 
-"framer-motion@3.x || 4.x || 5.x":
+"framer-motion@^5.3.0", "framer-motion@3.x || 4.x || 5.x":
   "integrity" "sha512-b3AIRy5lvJ4Fo2ZJ3nNRl7U8qF+uVG4VGY/Gi+fwLVxSqxkkX1hLuXV67uXxn+ideGUs0wRj+X7DzQEfvQsmaw=="
   "resolved" "https://registry.npmjs.org/framer-motion/-/framer-motion-5.3.0.tgz"
   "version" "5.3.0"
