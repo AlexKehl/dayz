@@ -1,9 +1,10 @@
+import { PlayerInfo } from '@/pages/api/sheets'
 import { Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react'
 import React from 'react'
 
 interface Props {
   headers?: string[]
-  rows?: string[][]
+  rows?: PlayerInfo[][]
 }
 const GoogleTable = ({ headers, rows }: Props) => {
   if (!headers || !rows) {
@@ -14,15 +15,20 @@ const GoogleTable = ({ headers, rows }: Props) => {
       <Thead>
         <Tr>
           {headers.map((h) => (
-            <Th>{h}</Th>
+            <Th idx={h}>{h}</Th>
           ))}
         </Tr>
       </Thead>
       <Tbody>
-        {rows.map((row) => (
-          <Tr>
-            {row.map((cell) => (
-              <Td>{cell}</Td>
+        {rows.map((row, rowIdx) => (
+          <Tr key={rowIdx}>
+            {row.map((player: PlayerInfo) => (
+              <Td
+                key={player.name}
+                backgroundColor={player.isOnline ? 'green.100' : 'white'}
+              >
+                {player.name}
+              </Td>
             ))}
           </Tr>
         ))}
