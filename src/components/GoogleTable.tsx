@@ -1,4 +1,4 @@
-import { PlayerInfo } from '@/pages/api/sheets'
+import { PlayerInfo } from '@/api/Tables'
 import { Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react'
 import React from 'react'
 
