@@ -4,6 +4,7 @@ import cors from 'cors'
 import EnvProxy from 'EnvProxy'
 import axios from 'axios'
 import cheerio from 'cheerio'
+import { withRetry } from '@/utils/Functions'
 
 export interface PlayerInfo {
   isOnline: boolean
@@ -36,12 +37,13 @@ const getPlayerNameBySteamId = async (steamId: string): Promise<string> => {
 }
 
 const mapSteamIdsToNames = async (playerList: string[][]) => {
-  console.log(playerList)
   return Promise.all(
     playerList.map((row) => {
       return Promise.all(
         row.map((player) => {
-          return getPlayerNameBySteamId(player)
+          return withRetry({ delay: 500, retryAmount: Infinity })(
+            getPlayerNameBySteamId
+          )(player)
         })
       )
     })
@@ -80,7 +82,6 @@ export const getTableData = async () => {
   ])
   const names = await mapSteamIdsToNames(rows.map((r) => r._rawData))
 
-  console.log(names)
   return {
     headers,
     rows: playerMap(gameTrackerPage, names),

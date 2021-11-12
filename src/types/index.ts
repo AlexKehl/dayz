@@ -4,4 +4,6 @@ export type AsyncReturnType<T extends (...args: any) => any> = T extends (
   ? U
   : T extends (...args: any) => infer U
   ? U
-  : any;
+  : any
+
+export type Fn = (...args: any[]) => any
