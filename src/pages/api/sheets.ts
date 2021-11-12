@@ -24,10 +24,12 @@ export const getGameTrackerPage = async (): Promise<string> => {
   return $('#HTML_online_players').html() as string
 }
 
-const getPlayerNameBySteamId = async (steamId: string): Promise<string> => {
-  if (!/\d{17}/.test(steamId)) {
-    return steamId
+const getPlayerNameBySteamId = async (cellValue: string): Promise<string> => {
+  const steamIdRegex = /\d{17}/
+  if (!steamIdRegex.test(cellValue)) {
+    return cellValue
   }
+  const [steamId] = cellValue.match(steamIdRegex)!
   const { data } = await axios.get(
     `https://www.dayzeuropa.com/playerProfile.php?id=${steamId}&p=quarter`
   )
