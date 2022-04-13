@@ -1,4 +1,4 @@
-import { AsyncReturnType, Fn } from '@/types'
+import { Fn, AsyncReturnType } from 'src/types'
 
 export const asyncTimeout =
   (time: number) =>

@@ -1,6 +1,6 @@
-import { getTableData } from '@/api/Tables'
-import { AsyncReturnType } from '@/types'
 import React from 'react'
+import { getTableData } from 'src/api/Tables'
+import { AsyncReturnType } from 'src/types'
 import GoogleTable from './GoogleTable'
 
 interface Props {
@@ -8,8 +8,8 @@ interface Props {
 }
 
 const Home = ({ tableData }: Props) => {
-  const { headers, rows } = tableData
-  return <GoogleTable headers={headers} rows={rows}></GoogleTable>
+  const { headers, rows, names } = tableData
+  return <GoogleTable headers={headers} rows={rows} names={names}></GoogleTable>
 }
 
 export default Home

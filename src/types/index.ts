@@ -1,3 +1,8 @@
+export interface PlayerInfo {
+  isOnline: boolean
+  name: string
+}
+
 export type AsyncReturnType<T extends (...args: any) => any> = T extends (
   ...args: any
 ) => Promise<infer U>

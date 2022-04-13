@@ -1,15 +1,31 @@
-import { PlayerInfo } from '@/api/Tables'
 import { Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { updateOnlineStatus } from 'src/api/OnlineStatus'
+import { PlayerInfo } from 'src/types'
 
 interface Props {
   headers?: string[]
   rows?: PlayerInfo[][]
+  names: string[][]
 }
-const GoogleTable = ({ headers, rows }: Props) => {
+const GoogleTable = ({ headers, rows, names }: Props) => {
   if (!headers || !rows) {
     return <div>Loading</div>
   }
+
+  const [rowsState, setRowsState] = useState<PlayerInfo[][]>(rows)
+
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      const newRowsState = await updateOnlineStatus(headers, names)
+      setRowsState(newRowsState.rows)
+    }, 1000 * 30)
+
+    return () => {
+      clearInterval(interval)
+    }
+  }, [])
+
   return (
     <Table variant="simple">
       <Thead>
@@ -22,7 +38,7 @@ const GoogleTable = ({ headers, rows }: Props) => {
         </Tr>
       </Thead>
       <Tbody>
-        {rows.map((row, rowIdx) => (
+        {rowsState.map((row, rowIdx) => (
           <Tr key={rowIdx}>
             {row.map((player: PlayerInfo, cellIdx) => (
               <Td

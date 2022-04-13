@@ -2,25 +2,11 @@ import { GoogleSpreadsheet } from 'google-spreadsheet'
 import EnvProxy from 'EnvProxy'
 import axios from 'axios'
 import cheerio from 'cheerio'
-import { withRetry } from '@/utils/Functions'
-
-export interface PlayerInfo {
-  isOnline: boolean
-  name: string
-}
-
+import { playerMap } from 'src/api/OnlineStatus'
+import { withRetry } from 'src/utils/Functions'
 const doc = new GoogleSpreadsheet(EnvProxy.SHEET_ID)
 
 doc.useApiKey(EnvProxy.API_KEY)
-
-export const getGameTrackerPage = async (): Promise<string> => {
-  const { data } = await axios.get(
-    'https://www.gametracker.com/server_info/135.125.188.104:2352/'
-  )
-
-  const $ = cheerio.load(data)
-  return $('#HTML_online_players').html() as string
-}
 
 const getPlayerNameBySteamId = async (cellValue: string): Promise<string> => {
   const steamIdRegex = /\d{17}/
@@ -50,22 +36,13 @@ const mapSteamIdsToNames = async (playerList: string[][]) => {
   )
 }
 
-export const playerMap = (
-  gameTrackerPage: string,
-  playerList: string[][]
-): PlayerInfo[][] => {
-  return playerList.map((row) => {
-    return row.map((player) => {
-      return {
-        isOnline: Boolean(player)
-          ? new RegExp(player.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).test(
-              gameTrackerPage
-            )
-          : false,
-        name: player,
-      }
-    })
-  })
+const getGameTrackerPage = async (): Promise<string> => {
+  const { data } = await axios.get(
+    'https://www.gametracker.com/server_info/135.125.188.104:2352/'
+  )
+
+  const $ = cheerio.load(data)
+  return $('#HTML_online_players').html() as string
 }
 
 const getDocData = async () => {
@@ -85,5 +62,6 @@ export const getTableData = async () => {
   return {
     headers,
     rows: playerMap(gameTrackerPage, names),
+    names,
   }
 }
