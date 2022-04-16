@@ -17,7 +17,6 @@ const getPlayerNameBySteamId =
     }
     const [steamId] = cellValue.match(steamIdRegex)!
 
-    console.log(steamIdMap[steamId]?.[0]?.nickName)
     return steamIdMap[steamId]?.[0]?.nickName || steamId
   }
 
@@ -37,18 +36,18 @@ const getSteamIdMap = (
 }
 
 const mapSteamIdsToNames = async (playerList: string[][]) => {
-  const { data } = await axios.get(
+  const europaSite = await axios.get(
     'https://www.dayzeuropa.com/leaderboard.php?p=quarter'
   )
-  const $ = cheerio.load(data)
+  console.log(europaSite.status)
+  console.log(europaSite.statusText)
+  const $ = cheerio.load(europaSite.data)
   const tableChildren = $('#playerTable').children()
   const tableBody = $(tableChildren).children().get(1)
 
   const firstPlayer = $(tableBody).first()
 
   const steamIdMap = getSteamIdMap(firstPlayer)
-
-  console.log({ steamIdMap })
 
   return playerList.map((row) => {
     return row.map((player) => {
