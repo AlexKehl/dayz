@@ -39,7 +39,6 @@ const mapSteamIdsToNames = async (playerList: string[][]) => {
   const europaSite = await axios.get(
     'https://www.dayzeuropa.com/leaderboard.php?p=quarter'
   )
-  console.log(europaSite.data)
   const $ = cheerio.load(europaSite.data)
   const tableChildren = $('#playerTable').children()
   const tableBody = $(tableChildren).children().get(1)
@@ -47,6 +46,7 @@ const mapSteamIdsToNames = async (playerList: string[][]) => {
   const firstPlayer = $(tableBody).first()
 
   const steamIdMap = getSteamIdMap(firstPlayer)
+  console.log({ steamIdMap })
 
   return playerList.map((row) => {
     return row.map((player) => {
