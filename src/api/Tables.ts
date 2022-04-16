@@ -1,39 +1,57 @@
 import { GoogleSpreadsheet } from 'google-spreadsheet'
+import _ from 'lodash'
 import EnvProxy from 'EnvProxy'
 import axios from 'axios'
 import cheerio from 'cheerio'
 import { playerMap } from 'src/api/OnlineStatus'
-import { withRetry } from 'src/utils/Functions'
 const doc = new GoogleSpreadsheet(EnvProxy.SHEET_ID)
 
 doc.useApiKey(EnvProxy.API_KEY)
 
-const getPlayerNameBySteamId = async (cellValue: string): Promise<string> => {
-  const steamIdRegex = /\d{17}/
-  if (!steamIdRegex.test(cellValue)) {
-    return cellValue
-  }
-  const [steamId] = cellValue.match(steamIdRegex)!
-  const { data } = await axios.get(
-    `https://www.dayzeuropa.com/playerProfile.php?id=${steamId}&p=quarter`
-  )
+const getPlayerNameBySteamId =
+  (steamIdMap: ReturnType<typeof getSteamIdMap>) =>
+  (cellValue: string): string => {
+    const steamIdRegex = /\d{17}/
+    if (!steamIdRegex.test(cellValue)) {
+      return cellValue
+    }
+    const [steamId] = cellValue.match(steamIdRegex)!
 
-  const $ = cheerio.load(data)
-  return $('.playerName').html() || steamId
+    return steamIdMap[steamId]?.[0]?.nickName || steamId
+  }
+
+const getSteamIdMap = (
+  firstPlayer: cheerio.Cheerio,
+  acc: { steamId: string; nickName: string }[] = []
+): Record<string, { steamId: string; nickName: string }[]> => {
+  if (!firstPlayer.next().length) {
+    return _.groupBy(acc, 'steamId')
+  }
+
+  const steamId = _.trim(firstPlayer.children().first().html()!)
+  const nickName = _.trim(
+    firstPlayer.children().first().next().children().first().html()!
+  )
+  return getSteamIdMap(firstPlayer.next(), [...acc, { steamId, nickName }])
 }
 
 const mapSteamIdsToNames = async (playerList: string[][]) => {
-  return Promise.all(
-    playerList.map((row) => {
-      return Promise.all(
-        row.map((player) => {
-          return withRetry({ delay: 500, retryAmount: Infinity })(
-            getPlayerNameBySteamId
-          )(player)
-        })
-      )
-    })
+  const { data } = await axios.get(
+    `https://www.dayzeuropa.com/leaderboard.php?p=quarter`
   )
+  const $ = cheerio.load(data)
+  const tableChildren = $('#playerTable').children()
+  const tableBody = $(tableChildren).children().get(1)
+
+  const firstPlayer = $(tableBody).first()
+
+  const steamIdMap = getSteamIdMap(firstPlayer)
+
+  return playerList.map((row) => {
+    return row.map((player) => {
+      return getPlayerNameBySteamId(steamIdMap)(player)
+    })
+  })
 }
 
 const getGameTrackerPage = async (): Promise<string> => {
