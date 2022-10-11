@@ -57,7 +57,7 @@ const mapSteamIdsToNames = async (playerList: string[][]) => {
 
 const getGameTrackerPage = async (): Promise<string> => {
   const { data } = await axios.get(
-    'https://www.gametracker.com/server_info/135.125.188.104:2352/'
+    'https://www.gametracker.com/server_info/server.dayzeuropa.com:2352/'
   )
 
   const $ = cheerio.load(data)
