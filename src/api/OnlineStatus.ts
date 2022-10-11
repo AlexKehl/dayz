@@ -24,7 +24,7 @@ export const playerMap = (
 export const getGameTrackerPage = async (): Promise<string> => {
   const { data } = await axios.post(PROXY_URL, {
     method: 'get',
-    url: 'https://www.gametracker.com/server_info/135.125.188.104:2352/',
+    url: 'https://www.gametracker.com/server_info/server.dayzeuropa.com:2352/',
   })
 
   const $ = cheerio.load(data)
